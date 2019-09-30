@@ -4,15 +4,15 @@ const userArgv = process.argv.slice(2);
 const [action, key, value] = userArgv;
 
 function set(key, value) {
-  console.log("set", key, value);
-  const newSecrets = {
-    [key]: value
-  };
-  writeSecrets(newSecrets);
+  const secrets = readSecrets();
+  secrets[key] = value;
+  writeSecrets(secrets);
 }
 
 function unset(key) {
-  console.log("unset", key);
+  const secrets = readSecrets();
+  delete secrets[key];
+  writeSecrets(secrets);
 }
 
 function get(key) {
