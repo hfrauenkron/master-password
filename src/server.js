@@ -1,6 +1,6 @@
 // create webserver
 const http = require("http");
-const { get } = require("./lib/commands");
+const { get, set } = require("./lib/commands");
 const url = require("url");
 const fs = require("fs");
 
@@ -18,14 +18,25 @@ const server = http.createServer(function(request, response) {
   }
 
   try {
-    const path = request.url.slice(1);
-    const secret = get("abc", path);
-
-    response.write(secret);
+    const path = pathname.slice(1);
+    if (request.method === "GET") {
+      const secret = get("abc", path);
+      response.end(secret);
+    } else if (request.method === "POST") {
+      let body = "";
+      request.on("data", function(data) {
+        body += data;
+        console.log("Partial body: " + body);
+      });
+      request.on("end", function() {
+        console.log("Body: " + body);
+        set("abc", path, body);
+        response.end(`Set ${path}`);
+      });
+    }
   } catch (error) {
-    response.write("Can not read secret :-(");
+    response.end("Can not read secret :-(");
   }
-  response.end();
 });
 
 server.listen(7000, () => {

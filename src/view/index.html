@@ -8,24 +8,27 @@
   </head>
   <body>
     <h2>Welcome to Master Password!</h2>
-    <input id="secretInput" type="text" placeholder="Enter secret name" />
+    <h3>Get Secret:</h3>
+
     <form id="submitForm" action="#">
-      <button id="submitButton">Get Secret</button>
+      <input id="secretInput" type="text" placeholder="Enter secret name" />
+      <button>Get Secret</button>
       <div id="display"></div>
     </form>
     &nbsp;
+    <h3>Set Secret:</h3>
     <form id="setForm" action="#">
-      <input id="secretKey" type="text" placeholder="Enter new secret name" />
-      <input id="secretValue" type="password" placeholder="Enter pin" />
-      <button id="setButton">Set Secret</button>
+      <input id="key" type="text" placeholder="Enter new secret name" />
+      <input id="value" type="password" placeholder="Enter pin" />
+      <button>Set Secret</button>
     </form>
     <script>
       const secretInput = document.querySelector("#secretInput");
       const submitButton = document.querySelector("#submitButton");
       const display = document.querySelector("#display");
       const submitForm = document.querySelector("#submitForm");
-      const inputKey = document.querySelector("#inputKey");
-      const inputValue = document.querySelector("#inputValue");
+      const inputKey = document.querySelector("#key");
+      const inputValue = document.querySelector("#value");
       const setButton = document.querySelector("#setButton");
 
       function handleSubmit(event) {
@@ -43,9 +46,11 @@
       function handleCreate(event) {
         event.preventDefault();
 
-        const secret = {};
-        secret[inputKey.value] = inputValue.value;
-        console.log(inputKey.value, inputValue.value);
+        const url = `/${inputKey.value}`;
+        fetch(url, {
+          method: "POST",
+          body: inputValue.value
+        });
       }
 
       // async function handleSubmit(event) {
@@ -56,7 +61,7 @@
       // }
 
       submitForm.addEventListener("submit", handleSubmit);
-      setForm.addEventListener("setForm", handleCreate);
+      setForm.addEventListener("submit", handleCreate);
     </script>
   </body>
 </html>
