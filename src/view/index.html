@@ -7,61 +7,98 @@
     <title>Master Password</title>
   </head>
   <body>
-    <h2>Welcome to Master Password!</h2>
-    <h3>Get Secret:</h3>
-
-    <form id="submitForm" action="#">
-      <input id="secretInput" type="text" placeholder="Enter secret name" />
+    <h2>Welcome to Master Password</h2>
+    <h3>Get secret</h3>
+    <form id="submitForm">
+      <input
+        type="text"
+        placeholder="Enter secret name"
+        autocomplete="off"
+        name="key"
+      />
       <button>Get Secret</button>
-      <div id="display"></div>
     </form>
-    &nbsp;
-    <h3>Set Secret:</h3>
-    <form id="setForm" action="#">
-      <input id="key" type="text" placeholder="Enter new secret name" />
-      <input id="value" type="password" placeholder="Enter pin" />
+
+    <div id="showSecret"></div>
+
+    <h3>Set secret</h3>
+    <form id="setSecretForm">
+      <input
+        type="text"
+        placeholder="Enter secret name"
+        autocomplete="off"
+        name="key"
+      />
+      <input
+        type="password"
+        placeholder="Enter secret value"
+        autocomplete="off"
+        name="value"
+      />
       <button>Set Secret</button>
     </form>
+    &nbsp;
+    <h3>Remove secret</h3>
+    <form id="removeSecretForm">
+      <input
+        type="text"
+        placeholder="Enter secret name"
+        autocomplete="off"
+        name="key"
+      />
+      <button>Remove Secret</button>
+    </form>
+
     <script>
-      const secretInput = document.querySelector("#secretInput");
-      const submitButton = document.querySelector("#submitButton");
-      const display = document.querySelector("#display");
+      const showSecret = document.querySelector("#showSecret");
       const submitForm = document.querySelector("#submitForm");
-      const inputKey = document.querySelector("#key");
-      const inputValue = document.querySelector("#value");
-      const setButton = document.querySelector("#setButton");
+      const setSecretForm = document.querySelector("#setSecretForm");
+      const removeSecretForm = document.querySelector("#removeSecretForm");
 
       function handleSubmit(event) {
         event.preventDefault();
 
-        console.log(secretInput.value);
-        const url = `/${secretInput.value}`;
+        const data = Object.fromEntries(new FormData(submitForm).entries());
+        const url = `/${data.key}`;
         fetch(url)
           .then(response => response.text())
           .then(secret => {
-            display.innerHTML = secret;
+            showSecret.innerHTML = secret;
           });
       }
 
       function handleCreate(event) {
         event.preventDefault();
-
-        const url = `/${inputKey.value}`;
+        const data = Object.fromEntries(new FormData(setSecretForm).entries());
+        const url = `/${data.key}`;
         fetch(url, {
           method: "POST",
-          body: inputValue.value
+          body: data.value
         });
       }
 
       // async function handleSubmit(event) {
       //   event.preventDefault();
+
       //   const url = `/${secretInput.value}`;
       //   const secret = await fetch(url).then(response => response.text());
       //   showSecret.innerHTML = secret;
       // }
 
+      function handleRemove(event) {
+        event.preventDefault();
+        const data = Object.fromEntries(
+          new FormData(removeSecretForm).entries()
+        );
+        const url = `/${data.key}`;
+        fetch(url, {
+          method: "DELETE"
+        });
+      }
+
       submitForm.addEventListener("submit", handleSubmit);
-      setForm.addEventListener("submit", handleCreate);
+      setSecretForm.addEventListener("submit", handleCreate);
+      removeSecretForm.addEventListener("submit", handleRemove);
     </script>
   </body>
 </html>
